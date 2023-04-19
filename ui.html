@@ -1,0 +1,245 @@
+
+  <head>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <link rel="stylesheet" href="https://static.figma.com/api/figma-extension-api-0.0.1.css">
+
+    <style>
+      body,
+      canvas,
+      html {
+        margin: 0;
+        padding: 0;
+      }
+      p{
+        flex: 1;
+      }
+      button{
+        flex: 1;
+      }
+      h1{
+        font-size: 24px;
+      }
+      input[type="range"] {
+        width: 100%; /* Make the slider take up the full width of the container */
+        grid-row: 2; /* Position the slider in the second row of the grid */
+      }
+      input[type="text"] {
+        width: 100px;
+        margin-top: 5px;
+        border-radius: 4px;
+        border: solid 1px rgb(200, 200, 200);
+      }
+      label {
+        display: block;
+      }
+      .flex {
+        display: flex;
+        padding: 4px;
+        gap: 16px;
+        flex: 1;
+        justify-content: space-between;
+      }
+      .cta{
+        background-color: #0D8CE9;
+        color: white; 
+      }
+      .titleContainer{
+        display: flex;
+        padding: 8px;
+        flex: 1;
+        justify-content: center;
+      }
+      
+      .mainContainer{
+        padding: 8px;
+      }
+      #buttons{
+        margin-top: 20px;
+      }
+
+      .inputsContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+        align-items: center;
+        margin-top: 10px;
+        gap:16px;
+      }
+      /* .labledContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: left;
+        width: 100%;
+        flex: 0.5;
+        margin-top: 5px;
+      } */
+      
+      
+
+
+   </style> 
+  </head>
+  <body>
+    <!-- <canvas id="myCanvas" width="200" height="200"></canvas> -->
+    <div class="titleContainer">
+      <h2>Noise grid generator</h2>
+    </div>
+    
+    <div id="canvasContainer"></div>
+    <div class="mainContainer">  
+      
+      <div class="inputsContainer">
+        <div class="labeldContainer">
+          <label for="x_count">X count:</label>
+          <input id="x_count" value="50" type="text" />
+        </div>
+        <div class="labeldContainer">
+          <label for="y_count">Y count:</label>
+          <input id="y_count" value="50" type="text" />
+        </div>
+      </div>
+      
+      <div class="inputsContainer">
+        <div class="labeldContainer">
+          <label for="dimension">Dot size:</label>
+          <input id="dimension" value="4" type="text" />
+        </div>
+      </div>
+
+      <div class="inputsContainer">
+        <div class="labeldContainer">
+        <label for="x_gap">X gap:</label>
+        <input id="x_gap" value="10" type="text" />
+        </div>
+        <div class="labeldContainer">
+          <label for="y_gap">Y gap:</label>
+          <input id="y_gap" value="10" type="text" />
+        </div>
+      </div>
+  
+      <p>
+        Displacement offset:
+        <input
+          id="disp_off"
+          type="range"
+          value="25"
+          min="-200"
+          max="200"
+          step="1"
+        />
+      </p>
+      <p>
+        Smoothness:
+        <input id="factor" type="range" value="10" min="1" max="50" step="1" />
+      </p>
+      
+      <p>
+        Noise seed:
+        <input id="noiseXOffset" type="range" value="100" min="1" max="200" step="1" />
+      </p>
+   <div id="buttons" class="flex">
+     <button class="cta"id="create">Create</button>
+     <button id="cancel">Cancel</button>
+   </div>
+    </div>
+
+    <script>
+      const x_textbox = document.getElementById("x_count");
+      const y_textbox = document.getElementById("y_count");
+      const dimension_textbox = document.getElementById("dimension");
+      const x_gap_textbox = document.getElementById("x_gap");
+      const y_gap_textbox = document.getElementById("y_gap");
+      const displacement_slider = document.getElementById("disp_off");
+      const factor_slider = document.getElementById("factor");
+      const noiseXOffsetSlider = document.getElementById("noiseXOffset");
+
+      let dots = [];
+
+      // p5.js sketch code goes here
+      let cnv;
+     
+      function setup() {
+        cnv = createCanvas(windowWidth, 200);
+
+        cnv.parent("canvasContainer");
+
+        const inputs = document.querySelectorAll("input");
+        for (let i = 0; i < inputs.length; i++) {
+          inputs[i].addEventListener("input", generateGrid);
+        }
+        generateGrid();
+      }
+
+      function draw() {
+        background(245);
+        
+        fill(42);
+        noStroke();
+        const margin = 20; 
+        for (let d of dots) {
+          if(d.x<width-margin && d.x > margin && d.y<height-margin && d.y>margin){
+            ellipse(d.x, d.y, d.dimension, d.dimension);
+          }
+            
+          
+          
+        }
+
+        noLoop();
+      }
+
+    
+     
+
+     
+      function generateGrid() {
+        dots = [];
+        const x_count = parseInt(x_textbox.value, 10);
+        const y_count = parseInt(y_textbox.value, 10);
+        const dimension = parseInt(dimension_textbox.value, 10);
+        const x_gap = parseInt(x_gap_textbox.value, 10);
+        const y_gap = parseInt(y_gap_textbox.value, 10);
+        const displacement = parseInt(displacement_slider.value, 10);
+        const factor = parseInt(factor_slider.value, 10);
+        const xOffset = parseInt(noiseXOffsetSlider.value, 10); 
+        let index = 0;
+        
+        for (let x = 0; x < x_count; x++) {
+          for (let y = 0; y < y_count; y++) {
+            dots.push({
+              name: `Circle ${index}`,
+              x: x * x_gap + dimension / 2,
+              y:
+                y * y_gap +
+                dimension / 2 +
+                displacement * noise(x / factor+xOffset, y / factor+300),
+              dimension: dimension,
+              displacement: displacement,
+              factor: factor,
+            });
+            index++;
+          }
+        }
+
+        redraw();
+      }
+
+      document.getElementById("create").onclick = () => {
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: "create-grid",
+              dots,
+            },
+          },
+          "*"
+        );
+      };
+
+      document.getElementById("cancel").onclick = () => {
+        parent.postMessage({ pluginMessage: { type: "cancel" } }, "*");
+      };
+    </script>
+  </body>
+</html>
