@@ -21,8 +21,8 @@
         font-size: 24px;
       }
       input[type="range"] {
-        width: 100%; /* Make the slider take up the full width of the container */
-        grid-row: 2; /* Position the slider in the second row of the grid */
+        width: 100%; 
+        grid-row: 2; 
       }
       input[type="number"] {
         width: 80px;
@@ -91,7 +91,7 @@
    </style> 
   </head>
   <body>
-    <!-- <canvas id="myCanvas" width="200" height="200"></canvas> -->
+    
     <div class="titleContainer">
       <h2>Noise grid generator</h2>
     </div>
@@ -166,7 +166,7 @@
 
       let dots = [];
 
-      // p5.js sketch code goes here
+     
       let cnv;
      
       function setup() {
@@ -189,15 +189,7 @@
         const margin = 10; 
         translate(width/2,height/2);
         for (let d of dots) {
-          // if(d.x<width-margin && d.x > margin && d.y<height-margin && d.y>margin){
-          //   ellipse(d.x, d.y, d.dimension, d.dimension);
-          // }  
-            // const maxW = (d.xGap+d.dimension/2)*d.xCount;
-            // const maxH = (d.yGap+d.dimension/2)*d.yCount;
-            // const ratio2 = (width-margin*2)/maxW;
-            // const mappedX = (d.x-maxW/2+d.xGap+d.dimension/2)*ratio2;
-            // const mappedY = (d.y-maxH/2+d.yGap+d.dimension/2)*ratio2; 
-            // const mappedDim = d.dimension*ratio2;
+        
             let scalingFactor;
 
             const maxW = (d.xGap+d.dimension)*d.xCount;
@@ -217,7 +209,7 @@
             
             const mappedY = (d.y-maxH/2)*scalingFactor+(mappedDim+mappedYGap)/2;
             
-            //const mappedY = (d.y-maxH/2+d.yGap+d.dimension/2)*ratio2; 
+          
             
             ellipse(mappedX, mappedY, mappedDim, mappedDim);
 
