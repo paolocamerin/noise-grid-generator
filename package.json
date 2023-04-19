@@ -1,5 +1,5 @@
 {
-  "name": "Noise-grid-2",
+  "name": "Noise Grid Generator",
   "version": "1.0.0",
   "description": "Your Figma Plugin",
   "main": "code.js",

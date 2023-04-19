@@ -45,6 +45,10 @@ figma.ui.onmessage = (msg) => {
 
     figma.currentPage.selection = nodes;
   }
+
+  if (msg.type === "cancel") {
+    figma.closePlugin();
+  }
 };
 
 // Get the width and height of the content inside the frame
