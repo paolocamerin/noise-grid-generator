@@ -21,6 +21,7 @@
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
+    "figma-plugin-ds": "^1.0.1",
     "simplex-noise": "^4.0.1"
   }
 }

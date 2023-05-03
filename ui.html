@@ -10,42 +10,95 @@
       html {
         margin: 0;
         padding: 0;
+        overflow: hidden;
       }
-      p{
-        flex: 1;
-      }
+      
       button{
         flex: 1;
       }
       h1{
         font-size: 24px;
       }
+
+      h2{
+        text-transform: none;
+        font-size: 12px;
+        font-weight: bold;
+        margin: 0;
+        margin-top: 8px;
+      }
       input[type="range"] {
         width: 100%; 
-        grid-row: 2; 
+        margin-top: 5px;
+        margin-bottom: 10px;
+
       }
       input[type="number"] {
-        width: 80px;
+        font:inherit;
+        font-size: 1em ;
+        width: 120px;
+        height: 32px;
         margin-top: 5px;
-        border-radius: 4px;
+        border-radius: 2px;
+        border: solid 1px #fff;
+        padding: 4px 4px 4px 20px;
+      }
+
+      input[type="number"]:hover{
         border: solid 1px rgb(200, 200, 200);
+        cursor: default;
+      }
+
+      input[type="number"]:focus{
+        outline: none;
+        box-shadow: 0 0 0 1px hsl(213, 90%, 70%);
+      }
+
+      /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* Firefox */
+      input[type=number] {
+        -moz-appearance: textfield;
       }
 
       label {
         display: block;
+        position: absolute;
+        margin-top: 15px;
+        margin-left: 4px;
       }
 
       .inputsContainer {
+        position: relative;
         display: flex;
         flex-direction: row;
         justify-content: left;
-        align-items: center;
         flex: 1;
-        margin-top: 10px;
-        max-width: 100%;
         
+        max-width: 100%;
         gap: 16px;
+      }
 
+      
+
+      a {
+        color: dodgerblue;
+      }
+
+      .credits {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        font-weight: 400;
+        font-size: 10px;
+        text-transform: uppercase;
       }
 
       
@@ -83,52 +136,164 @@
       }
       #buttons{
         margin-top: 20px;
+        padding: 8px;
+      }
+      #cancel:hover{
+        border: solid 1px #0000009e ;
+      }
+      #create:hover{
+        background-color: #0159B5 ;
       }
 
-      
+      input[type=range] {
+        -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+        width: 100%; /* Specific width is required for Firefox. */
+        background: transparent; /* Otherwise white in Chrome */
+
+      }
+
+      input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+      }
+
+      input[type=range]:focus {
+        outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+      }
+
+      input[type=range]::-ms-track {
+        width: 100%;
+        cursor: pointer;
+
+        /* Hides the slider so custom styles can be added */
+        background: transparent; 
+        border-color: transparent;
+        color: transparent;
+      }
+
+      input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        border: 2px solid #fff;
+        height: 16px;
+        width: 16px;
+        border-radius: 8px;
+        background: #000;
+        cursor: pointer;
+        margin-top: -8px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+        box-shadow: 0px 1px 3px #393939; /* Add cool effects to your sliders! */
+      }
+
+      input[type=range]::-moz-range-thumb {
+        box-shadow: 0px 1px 3px #393939;
+        border: 2px solid #fff;
+        height: 16px;
+        width: 16px;
+        border-radius: 8px;
+        background: #000;
+        cursor: pointer;
+      }
+
+      input[type=range]::-ms-thumb {
+        box-shadow: 0px 1px 3px #393939;
+        border: 2px solid #fff;
+        height: 36px;
+        width: 16px;
+        border-radius: 8px;
+        background: #000;
+        cursor: pointer;
+      }
+
+
+      input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 1px;
+        cursor: pointer;
+        background: rgba(0,0,0,.3);
+        border-radius: 1px;
+        border: none;
+        margin-top: 8px;
+      }
+
+      /* input[type=range]:focus::-webkit-slider-runnable-track {
+        background: #367ebd;
+      } */
+
+      input[type=range]::-moz-range-track {
+        width: 100%;
+        height: 1px;
+        cursor: pointer;
+        background: rgba(0,0,0,.3);
+        border-radius: 1px;
+        border: none;
+      }
+
+      input[type=range]::-ms-track {
+        width: 100%;
+        height: 1px;
+        cursor: pointer;
+        background: rgba(0,0,0,.3);
+        border: none;
+        color: transparent;
+      }
+      input[type=range]::-ms-fill-lower {
+        background: rgba(0,0,0,.3);
+        border: none;
+      }
+      /* input[type=range]:focus::-ms-fill-lower {
+        background: #3071a9;
+      } */
+      input[type=range]::-ms-fill-upper {
+        background: rgba(0,0,0,.3);
+        border: none; 
+      }
+      /* input[type=range]:focus::-ms-fill-upper {
+        background: #367ebd;
+      } */
+
 
 
    </style> 
   </head>
   <body>
     
-    <div class="titleContainer">
-      <h2>Noise grid generator</h2>
-    </div>
+   
     
     <div id="canvasContainer"></div>
     <div class="mainContainer">  
-      
+      <h2>Circles count</h2>
       <div class="inputsContainer">
+        
         <div class="labeldContainer" class="singleInput">
-          <label for="x_count">X count:</label>
-          <input id="x_count" value="10" type="number"min="2" />
+          <label for="x_count">X</label>
+          <input id="x_count" value="20" type="number"min="2" />
         </div>
         <div class="labeldContainer">
-          <label for="y_count">Y count:</label>
-          <input id="y_count" value="10" type="number" min="2" />
-        </div>
-      </div>
-      
-      <div class="inputsContainer">
-        <div class="labeldContainer">
-          <label for="dimension">Dot size:</label>
-          <input id="dimension" value="4" type="number" min="0" />
+          <label for="y_count">Y</label>
+          <input id="y_count" value="20" type="number" min="2" />
         </div>
       </div>
-
+      <h2>Grid gap</h2>
       <div class="inputsContainer">
+        
         <div class="labeldContainer">
-          <label for="x_gap">X gap:</label>
+          <label for="x_gap">X</label>
           <input id="x_gap" value="10" type="number" min="0"/>
         </div>
         <div class="labeldContainer">
-          <label for="y_gap">Y gap:</label>
+          <label for="y_gap">Y</label>
           <input id="y_gap" value="10" type="number" min="0"/>
         </div>
       </div>
+      
+      <h2>Dot size</h2>
+      <div class="inputsContainer">
+        <div class="labeldContainer">
+          <label for="dimension">Ø</label>
+          <input id="dimension" value="20" type="number" min="0" />
+        </div>
+      </div>
+
   
-      <p>
+      <h2>
         Displacement offset:
         <input
           id="disp_off"
@@ -138,20 +303,32 @@
           max="200"
           step="1"
         />
-      </p>
-      <p>
+      </h2>
+      <h2>
         Smoothness:
         <input id="factor" type="range" value="10" min="1" max="50" step="1" />
-      </p>
+      </h2>
       
-      <p>
+      <h2>
         Noise seed:
         <input id="noiseXOffset" type="range" value="100" min="1" max="200" step="1" />
-      </p>
+      </h2>
    <div id="buttons" class="flex">
-     <button class="cta"id="create">Create</button>
-     <button id="cancel">Cancel</button>
+     <button class='cta' id="create">Create</button>
+  
+     <button id="cancel"  >Cancel</button>
    </div>
+   <div class="credits">
+    <p>
+      By
+      <a href="https://www.figma.com/@genoma" target="_blank">G3N0M4</a>
+    </p>
+    <p>
+      Instagram
+      <a href="https://www.instagram.com/g3n0m4/" target="_blank">@g3n0m4</a>
+    </p>
+    
+  </div>
     </div>
 
     <script>
@@ -170,7 +347,7 @@
       let cnv;
      
       function setup() {
-        cnv = createCanvas(windowWidth, 200);
+        cnv = createCanvas(300, 200);
 
         cnv.parent("canvasContainer");
 
