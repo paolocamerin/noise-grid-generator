@@ -1,109 +1,307 @@
+<head>
 
-  <head>
-  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <link rel="stylesheet" href="https://static.figma.com/api/figma-extension-api-0.0.1.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <link rel="stylesheet" href="https://static.figma.com/api/figma-extension-api-0.0.1.css">
 
-    <style>
-      body,
-      canvas,
-      html {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-      }
-      
-      button{
-        flex: 1;
-      }
-      h1{
-        font-size: 24px;
-      }
+  <style>
+    body,
+    canvas,
+    html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
 
-      h2{
-        text-transform: none;
-        font-size: 12px;
-        font-weight: bold;
-        margin: 0;
-        margin-top: 8px;
-      }
-      input[type="range"] {
-        width: 100%; 
-        margin-top: 5px;
-        margin-bottom: 10px;
+    #canvasContainer {
+      width: 100%;
+      height: 300px;
+      border: none;
+      background: #f5f5f5;
+    }
 
-      }
-      input[type="number"] {
-        font:inherit;
-        font-size: 1em ;
-        width: 120px;
-        height: 32px;
-        margin-top: 5px;
-        border-radius: 2px;
-        border: solid 1px #fff;
-        padding: 4px 4px 4px 20px;
-      }
+    * {
+      margin: 0;
+      padding: 0;
+    }
 
-      input[type="number"]:hover{
-        border: solid 1px rgb(200, 200, 200);
-        cursor: default;
-      }
+    button {
+      flex: 1;
+      height: 32px;
+    }
 
-      input[type="number"]:focus{
-        outline: none;
-        box-shadow: 0 0 0 1px hsl(213, 90%, 70%);
-      }
+    h1 {
+      font-size: 24px;
+    }
 
-      /* Chrome, Safari, Edge, Opera */
-      input::-webkit-outer-spin-button,
-      input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-      }
+    h2 {
+      text-transform: none;
+      font-size: 12px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
 
-      /* Firefox */
-      input[type=number] {
-        -moz-appearance: textfield;
-      }
+    input[type="range"] {
+      width: 100%;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      cursor: grab;
+    }
 
-      label {
-        display: block;
-        position: absolute;
-        margin-top: 15px;
-        margin-left: 4px;
-      }
+    input[type="range"]:active {
+      cursor: grabbing;
+    }
 
-      .inputsContainer {
-        position: relative;
-        display: flex;
-        flex-direction: row;
-        justify-content: left;
-        flex: 1;
-        
-        max-width: 100%;
-        gap: 16px;
-      }
+    input[type="number"] {
+      font: inherit;
+      font-size: 1em;
+      width: 100%;
+      height: 32px;
+      border-radius: 2px;
+      border: solid 1px #fff;
+      padding: 4px 8px 4px 20px;
+      cursor: ew-resize;
+      text-align: right;
+      background: white;
+    }
 
-      
+    input[type="number"]:hover {
+      border: solid 1px rgb(200, 200, 200);
+      cursor: ew-resize;
+    }
 
-      a {
-        color: dodgerblue;
-      }
+    input[type="number"]:focus {
+      outline: none;
+      box-shadow: 0 0 0 1px hsl(213, 90%, 70%);
+    }
 
-      .credits {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        gap: 12px;
-        font-weight: 400;
-        font-size: 10px;
-        text-transform: uppercase;
-      }
+    input[type="number"]::placeholder {
+      color: #999;
+      text-align: right;
+    }
 
-      
-      
-      /* .labledContainer {
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    /* Labels for number inputs (positioned inside) */
+    .labeldContainer label[for="x_count"],
+    .labeldContainer label[for="y_count"],
+    .labeldContainer label[for="x_gap"],
+    .labeldContainer label[for="y_gap"],
+    .labeldContainer label[for="noiseXOffset"],
+    .labeldContainer label[for="variant_seed"],
+    .labeldContainer label[for="rotation_amount"] {
+      display: block;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      margin-left: 8px;
+      pointer-events: none;
+      z-index: 1;
+      color: #666;
+      font-size: 0.9em;
+    }
+
+    /* Labels for checkboxes (normal positioning) */
+    .labeldContainer label[for="rotate_enabled"],
+    .labeldContainer label[for="randomize_variants"] {
+      position: static;
+      margin: 0;
+      pointer-events: auto;
+      color: inherit;
+      font-size: inherit;
+    }
+
+    /* Labels for select dropdowns (positioned above) */
+    .labeldContainer label[for*="noise_type"] {
+      position: static;
+      display: block;
+      margin-top: 8px;
+      pointer-events: auto;
+      color: inherit;
+      font-size: 0.85em;
+      font-weight: normal;
+    }
+
+    /* Spacing for checkbox labels */
+    #rotate_enabled_label {
+      display: block;
+      margin: 8px 0 8px 0;
+      white-space: nowrap;
+    }
+
+    #randomize_variants_label {
+      display: block;
+      margin: 8px 0 8px 0;
+      white-space: nowrap;
+    }
+
+    /* Spacing for rotation section */
+    #rotation-amount-label {
+      margin-top: 0;
+    }
+
+    #variant-seed-label {
+      margin-top: 0;
+    }
+
+    #randomize-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 16px;
+      margin-top: 0;
+    }
+
+    #randomize-container .labeldContainer {
+      flex: 1;
+    }
+
+    #randomize-container .labeldContainer:first-child {
+      flex: 1;
+    }
+
+    #randomize-container .labeldContainer:last-child {
+      flex: 1;
+    }
+
+    #rotation-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 16px;
+      margin-top: 0;
+    }
+
+    #rotation-container .labeldContainer {
+      flex: 1;
+    }
+
+    #rotation-container .labeldContainer:first-child {
+      flex: 1;
+    }
+
+    #rotation-container .labeldContainer:last-child {
+      flex: 1;
+    }
+
+    /* Make the three noise type dropdowns share the full width equally */
+    #noise-types-container .labeldContainer {
+      flex: 1;
+      min-width: 0;
+      /* allow shrinking without overflow */
+    }
+
+    /* Disabled look for whole sections */
+    #randomize-container[aria-disabled="true"],
+    #rotation-container[aria-disabled="true"] {
+      opacity: 0.5;
+    }
+
+    select {
+      font: inherit;
+      font-size: 1em;
+      width: 100%;
+      height: 32px;
+      margin-top: 0px;
+      border-radius: 2px;
+      border: solid 1px #fff;
+      padding: 4px 4px 4px 8px;
+      background: white;
+      appearance: menulist;
+      cursor: pointer;
+    }
+
+    select:hover {
+      border: solid 1px rgb(200, 200, 200);
+    }
+
+    select:focus {
+      outline: none;
+      box-shadow: 0 0 0 1px hsl(213, 90%, 70%);
+    }
+
+    .inputsContainer {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      justify-content: left;
+      flex: 1;
+
+      max-width: 100%;
+      gap: 16px;
+    }
+
+
+
+    a {
+      color: dodgerblue;
+    }
+
+    .credits {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      margin-top: 12px;
+
+      gap: 12px;
+      font-weight: 400;
+      font-size: 10px;
+      text-transform: uppercase;
+
+    }
+
+    .coffee-banner {
+      position: absolute;
+      top: calc(100% - 48px);
+      height: 48px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #14AE5C;
+      color: white;
+      padding: 12px 8px;
+      transition: background-color 0.2s ease;
+      text-decoration: none;
+      font-weight: 400;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      width: 100%;
+      box-sizing: border-box;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+
+
+    .coffee-banner svg {
+      margin-right: 8px;
+    }
+
+    .coffee-link {
+      color: #FFBF00;
+      text-decoration: underline;
+      font-weight: 400;
+    }
+
+    .coffee-link:hover {
+      color: #2B2B2B;
+    }
+
+
+
+    /* .labledContainer {
         display: flex;
         flex-direction: column;
         flex: 0.5;
@@ -111,344 +309,1040 @@
         max-width: 100px;
         margin-top: 5px;
       } */
-      
-      
-      .flex {
-        display: flex;
-        padding: 4px;
-        gap: 16px;
-        flex: 1;
-        justify-content: space-between;
-      }
-      .cta{
-        background-color: #0D8CE9;
-        color: white; 
-      }
-      .titleContainer{
-        display: flex;
-        padding: 8px;
-        flex: 1;
-        justify-content: center;
-      }
-      
-      .mainContainer{
-        padding: 8px;
-      }
-      #buttons{
-        margin-top: 20px;
-        padding: 8px;
-      }
-      #cancel:hover{
-        border: solid 1px #0000009e ;
-      }
-      #create:hover{
-        background-color: #0159B5 ;
-      }
-
-      input[type=range] {
-        -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
-        width: 100%; /* Specific width is required for Firefox. */
-        background: transparent; /* Otherwise white in Chrome */
-
-      }
-
-      input[type=range]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-      }
-
-      input[type=range]:focus {
-        outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
-      }
-
-      input[type=range]::-ms-track {
-        width: 100%;
-        cursor: pointer;
-
-        /* Hides the slider so custom styles can be added */
-        background: transparent; 
-        border-color: transparent;
-        color: transparent;
-      }
-
-      input[type=range]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        border: 2px solid #fff;
-        height: 16px;
-        width: 16px;
-        border-radius: 8px;
-        background: #000;
-        cursor: pointer;
-        margin-top: -8px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
-        box-shadow: 0px 1px 3px #393939; /* Add cool effects to your sliders! */
-      }
-
-      input[type=range]::-moz-range-thumb {
-        box-shadow: 0px 1px 3px #393939;
-        border: 2px solid #fff;
-        height: 16px;
-        width: 16px;
-        border-radius: 8px;
-        background: #000;
-        cursor: pointer;
-      }
-
-      input[type=range]::-ms-thumb {
-        box-shadow: 0px 1px 3px #393939;
-        border: 2px solid #fff;
-        height: 36px;
-        width: 16px;
-        border-radius: 8px;
-        background: #000;
-        cursor: pointer;
-      }
 
 
-      input[type=range]::-webkit-slider-runnable-track {
-        width: 100%;
-        height: 1px;
-        cursor: pointer;
-        background: rgba(0,0,0,.3);
-        border-radius: 1px;
-        border: none;
-        margin-top: 8px;
-      }
+    .flex {
+      display: flex;
+      padding: 4px;
+      gap: 16px;
+      flex: 1;
+      justify-content: space-between;
+    }
 
-      /* input[type=range]:focus::-webkit-slider-runnable-track {
+    .cta {
+      background-color: #0D8CE9;
+      color: white;
+    }
+
+    .titleContainer {
+      display: flex;
+      padding: 8px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .mainContainer {
+      padding: 8px;
+    }
+
+    .gridControls {
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+
+    }
+
+
+
+    #buttons {
+      margin-top: 20px;
+
+    }
+
+    #cancel:hover {
+      border: solid 1px #0000009e;
+    }
+
+    #create:hover {
+      background-color: #0159B5;
+
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      /* Hides the slider so that custom slider can be made */
+      width: 100%;
+      /* Specific width is required for Firefox. */
+      background: transparent;
+      /* Otherwise white in Chrome */
+      cursor: grab;
+    }
+
+    input[type=range]:active {
+      cursor: grabbing;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: grab;
+    }
+
+    input[type=range]::-webkit-slider-thumb:active {
+      cursor: grabbing;
+    }
+
+    input[type=range]::-ms-track {
+      width: 100%;
+      cursor: pointer;
+
+      /* Hides the slider so custom styles can be added */
+      background: transparent;
+      border-color: transparent;
+      color: transparent;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      border: 2px solid #fff;
+      height: 16px;
+      width: 16px;
+      border-radius: 8px;
+      background: #000;
+      cursor: grab;
+      margin-top: -8px;
+      /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+      box-shadow: 0px 1px 3px #393939;
+      /* Add cool effects to your sliders! */
+    }
+
+    input[type=range]::-webkit-slider-thumb:active {
+      cursor: grabbing;
+    }
+
+    input[type=range]::-moz-range-thumb {
+      box-shadow: 0px 1px 3px #393939;
+      border: 2px solid #fff;
+      height: 16px;
+      width: 16px;
+      border-radius: 8px;
+      background: #000;
+      cursor: grab;
+    }
+
+    input[type=range]::-moz-range-thumb:active {
+      cursor: grabbing;
+    }
+
+    input[type=range]::-ms-thumb {
+      box-shadow: 0px 1px 3px #393939;
+      border: 2px solid #fff;
+      height: 36px;
+      width: 16px;
+      border-radius: 8px;
+      background: #000;
+      cursor: grab;
+    }
+
+    input[type=range]::-ms-thumb:active {
+      cursor: grabbing;
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 1px;
+      cursor: grab;
+      background: rgba(0, 0, 0, .3);
+      border-radius: 1px;
+      border: none;
+      margin-top: 8px;
+    }
+
+    input[type=range]::-webkit-slider-runnable-track:active {
+      cursor: grabbing;
+    }
+
+    /* input[type=range]:focus::-webkit-slider-runnable-track {
         background: #367ebd;
       } */
 
-      input[type=range]::-moz-range-track {
-        width: 100%;
-        height: 1px;
-        cursor: pointer;
-        background: rgba(0,0,0,.3);
-        border-radius: 1px;
-        border: none;
-      }
+    input[type=range]::-moz-range-track {
+      width: 100%;
+      height: 1px;
+      cursor: pointer;
+      background: rgba(0, 0, 0, .3);
+      border-radius: 1px;
+      border: none;
+    }
 
-      input[type=range]::-ms-track {
-        width: 100%;
-        height: 1px;
-        cursor: pointer;
-        background: rgba(0,0,0,.3);
-        border: none;
-        color: transparent;
-      }
-      input[type=range]::-ms-fill-lower {
-        background: rgba(0,0,0,.3);
-        border: none;
-      }
-      /* input[type=range]:focus::-ms-fill-lower {
+    input[type=range]::-ms-track {
+      width: 100%;
+      height: 1px;
+      cursor: pointer;
+      background: rgba(0, 0, 0, .3);
+      border: none;
+      color: transparent;
+    }
+
+    input[type=range]::-ms-fill-lower {
+      background: rgba(0, 0, 0, .3);
+      border: none;
+    }
+
+    /* input[type=range]:focus::-ms-fill-lower {
         background: #3071a9;
       } */
-      input[type=range]::-ms-fill-upper {
-        background: rgba(0,0,0,.3);
-        border: none; 
-      }
-      /* input[type=range]:focus::-ms-fill-upper {
+    input[type=range]::-ms-fill-upper {
+      background: rgba(0, 0, 0, .3);
+      border: none;
+    }
+
+    /* input[type=range]:focus::-ms-fill-upper {
         background: #367ebd;
       } */
 
+    .selection-status {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+
+      margin-bottom: 16px;
+      padding: 8px;
+      border-radius: 4px;
 
 
-   </style> 
-  </head>
-  <body>
-    
-   
-    
-    <div id="canvasContainer"></div>
-    <div class="mainContainer">  
-      <h2>Circles count</h2>
-      <div class="inputsContainer">
-        
-        <div class="labeldContainer" class="singleInput">
-          <label for="x_count">X</label>
-          <input id="x_count" value="20" type="number"min="2" />
-        </div>
-        <div class="labeldContainer">
-          <label for="y_count">Y</label>
-          <input id="y_count" value="20" type="number" min="2" />
+    }
+
+    #selection-preview {
+      background: #f5f5f5;
+      display: flex;
+      margin-left: auto;
+      justify-content: center;
+      align-items: center;
+      height: 60px;
+      width: 60px;
+
+    }
+
+    #no-selection {
+      color: #666;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    #h2_checkbox {
+      height: 14px;
+    }
+
+    #h2_checkbox label {
+      margin: 0;
+    }
+
+    input[type=checkbox],
+    input[type=radio] {
+      vertical-align: middle;
+      position: relative;
+      bottom: .08em;
+      /* this is a better value for different fonts! */
+    }
+
+    input[type=range]:focus {
+      outline: none;
+      /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+    }
+
+    /* Style for disabled slider */
+    input[type=range]:disabled {
+      opacity: 0.5;
+
+    }
+
+    /* Style for disabled number inputs (e.g., rotation Amount when off) */
+    input[type=number]:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Style for disabled slider label */
+    .disabled-text {
+      opacity: 0.5;
+    }
+
+    .disabled {
+      opacity: 0.5;
+      cursor: not-allowed !important;
+    }
+
+    /* Screen reader only content */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Focus styles for better accessibility */
+    input:focus,
+    button:focus {
+      outline: 2px solid #0D8CE9;
+      outline-offset: 2px;
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+      input[type="number"] {
+        border: 2px solid #000;
+      }
+
+      select {
+        border: 2px solid #000;
+      }
+
+      .disabled {
+        opacity: 0.3;
+      }
+    }
+
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+
+
+  <div id="canvasContainer" role="img" aria-label="Noise grid preview"></div>
+  <div class="mainContainer">
+    <div class="gridControls" role="group" aria-label="Grid configuration controls">
+      <div>
+        <h2 id="elements-count-label">Elements count</h2>
+        <div class="inputsContainer" role="group" aria-labelledby="elements-count-label">
+
+          <div class="labeldContainer singleInput">
+            <label for="x_count" id="x_count_label">X</label>
+            <input id="x_count" value="20" type="number" min="2" aria-labelledby="x_count_label"
+              aria-describedby="x_count_help" />
+            <div id="x_count_help" class="sr-only">Number of elements in the horizontal direction</div>
+          </div>
+          <div class="labeldContainer">
+            <label for="y_count" id="y_count_label">Y</label>
+            <input id="y_count" value="20" type="number" min="2" aria-labelledby="y_count_label"
+              aria-describedby="y_count_help" />
+            <div id="y_count_help" class="sr-only">Number of elements in the vertical direction</div>
+          </div>
         </div>
       </div>
-      <h2>Grid gap</h2>
-      <div class="inputsContainer">
-        
-        <div class="labeldContainer">
-          <label for="x_gap">X</label>
-          <input id="x_gap" value="10" type="number" min="0"/>
-        </div>
-        <div class="labeldContainer">
-          <label for="y_gap">Y</label>
-          <input id="y_gap" value="10" type="number" min="0"/>
+      <div>
+        <h2 id="grid-gap-label">Grid gap</h2>
+        <div class="inputsContainer" role="group" aria-labelledby="grid-gap-label">
+
+          <div class="labeldContainer">
+            <label for="x_gap" id="x_gap_label">X</label>
+            <input id="x_gap" value="10" type="number" aria-labelledby="x_gap_label" aria-describedby="x_gap_help" />
+            <div id="x_gap_help" class="sr-only">Horizontal spacing between elements in pixels</div>
+          </div>
+          <div class="labeldContainer">
+            <label for="y_gap" id="y_gap_label">Y</label>
+            <input id="y_gap" value="10" type="number" aria-labelledby="y_gap_label" aria-describedby="y_gap_help" />
+            <div id="y_gap_help" class="sr-only">Vertical spacing between elements in pixels</div>
+          </div>
         </div>
       </div>
-      
-      <h2>Dot size</h2>
+    </div>
+
+    <!-- <h2>Dot size</h2>
       <div class="inputsContainer">
         <div class="labeldContainer">
           <label for="dimension">Ø</label>
           <input id="dimension" value="20" type="number" min="0" />
         </div>
-      </div>
+      </div> -->
 
-  
-      <h2>
-        Displacement offset:
-        <input
-          id="disp_off"
-          type="range"
-          value="0"
-          min="-200"
-          max="200"
-          step="1"
-        />
-      </h2>
-      <h2>
-        Smoothness:
-        <input id="factor" type="range" value="10" min="1" max="50" step="1" />
-      </h2>
-      
-      <h2>
-        Noise seed:
-        <input id="noiseXOffset" type="range" value="100" min="1" max="200" step="1" />
-      </h2>
-   <div id="buttons" class="flex">
-     <button class='cta' id="create">Create</button>
-  
-     <button id="cancel"  >Cancel</button>
-   </div>
-   <div class="credits">
-    <p>
-      By
-      <a href="https://www.figma.com/@genoma" target="_blank">G3N0M4</a>
-    </p>
-    <p>
-      Instagram
-      <a href="https://www.instagram.com/g3n0m4/" target="_blank">@g3n0m4</a>
-    </p>
-    
-  </div>
+
+    <div>
+      <h2 id="displacement-label">Displacement offset</h2>
+      <label for="disp_off" class="sr-only">Displacement offset</label>
+      <input id="disp_off" type="range" value="0" min="-1" max="1" step="0.01" aria-labelledby="displacement-label"
+        aria-describedby="displacement_help" />
+      <div id="displacement_help" class="sr-only">Controls how much elements are displaced from their grid positions
+      </div>
     </div>
 
-    <script>
-      const x_textbox = document.getElementById("x_count");
-      const y_textbox = document.getElementById("y_count");
-      const dimension_textbox = document.getElementById("dimension");
-      const x_gap_textbox = document.getElementById("x_gap");
-      const y_gap_textbox = document.getElementById("y_gap");
-      const displacement_slider = document.getElementById("disp_off");
-      const factor_slider = document.getElementById("factor");
-      const noiseXOffsetSlider = document.getElementById("noiseXOffset");
+    <div>
+      <h2 id="smoothness-label">Smoothness</h2>
+      <label for="factor" class="sr-only">Smoothness</label>
+      <input id="factor" type="range" value="0.5" min="0.001" max="1" step="0.01" aria-labelledby="smoothness-label"
+        aria-describedby="smoothness_help" />
+      <div id="smoothness_help" class="sr-only">Controls the smoothness of the noise pattern</div>
+    </div>
 
-      let dots = [];
+    <div>
+      <h2 id="noise-seed-label">Noise seed</h2>
+      <div class="inputsContainer">
+        <div class="labeldContainer">
+          <label for="noiseXOffset" id="noiseXOffset_label">Seed</label>
+          <input id="noiseXOffset" type="number" value="1" min="0" aria-labelledby="noiseXOffset_label"
+            aria-describedby="noiseXOffset_help" />
+          <div id="noiseXOffset_help" class="sr-only">Seed value for noise generation</div>
+        </div>
+      </div>
+    </div>
 
-     
-      let cnv;
-     
-      function setup() {
-        cnv = createCanvas(300, 200);
+    <div>
+      <h2 id="rotation-label">Rotate instances</h2>
+      <div class="inputsContainer" id="rotation-container">
+        <div class="labeldContainer">
+          <label for="rotate_enabled" id="rotate_enabled_label">
+            <input type="checkbox" id="rotate_enabled" aria-describedby="rotation_help" />
+            Enable rotation
+          </label>
+          <div id="rotation_help" class="sr-only">Enable rotation of elements in the grid</div>
+        </div>
+        <div class="labeldContainer">
+          <label for="rotation_amount" id="rotation_amount_label">Amount</label>
+          <input id="rotation_amount" type="number" value="0" step="0.01" aria-labelledby="rotation_amount_label"
+            aria-describedby="rotation_amount_help" />
+          <div id="rotation_amount_help" class="sr-only">Controls the amount of rotation applied to elements</div>
+        </div>
+      </div>
+    </div>
 
-        cnv.parent("canvasContainer");
+    <div>
+      <h2 id="randomize-label">Randomize instances</h2>
+      <div class="inputsContainer" id="randomize-container" aria-disabled="true">
+        <div class="labeldContainer">
+          <label for="randomize_variants" id="randomize_variants_label">
+            <input type="checkbox" id="randomize_variants" aria-describedby="randomize_help" disabled />
+            Randomize
+          </label>
+          <div id="randomize_help" class="sr-only">Randomize between different component variants</div>
+        </div>
+        <div class="labeldContainer">
+          <label for="variant_seed" id="variant_seed_label">Seed</label>
+          <input id="variant_seed" type="number" value="1" min="0" aria-labelledby="variant_seed_label"
+            aria-describedby="variant_seed_help" disabled />
+          <div id="variant_seed_help" class="sr-only">Seed value for variant randomization</div>
+        </div>
+      </div>
+    </div>
 
-        const inputs = document.querySelectorAll("input");
-        for (let i = 0; i < inputs.length; i++) {
-          inputs[i].addEventListener("input", generateGrid);
+    <div>
+      <h2 id="noise-type-label">Noise Types</h2>
+      <div class="inputsContainer" id="noise-types-container">
+        <div class="labeldContainer">
+          <label for="displacement_noise_type" id="displacement_noise_type_label">Displacement</label>
+          <select id="displacement_noise_type" aria-labelledby="displacement_noise_type_label"
+            aria-describedby="displacement_noise_type_help">
+            <option value="simplex">Noise</option>
+            <option value="random">Random</option>
+          </select>
+          <div id="displacement_noise_type_help" class="sr-only">Noise type for displacement randomization</div>
+        </div>
+        <div class="labeldContainer">
+          <label for="rotation_noise_type" id="rotation_noise_type_label">Rotation</label>
+          <select id="rotation_noise_type" aria-labelledby="rotation_noise_type_label"
+            aria-describedby="rotation_noise_type_help">
+            <option value="simplex">Noise</option>
+            <option value="random">Random</option>
+          </select>
+          <div id="rotation_noise_type_help" class="sr-only">Noise type for rotation randomization</div>
+        </div>
+        <div class="labeldContainer">
+          <label for="variant_noise_type" id="variant_noise_type_label">Variants</label>
+          <select id="variant_noise_type" aria-labelledby="variant_noise_type_label"
+            aria-describedby="variant_noise_type_help">
+            <option value="simplex">Noise</option>
+            <option value="random">Random</option>
+          </select>
+          <div id="variant_noise_type_help" class="sr-only">Noise type for variant randomization</div>
+        </div>
+      </div>
+    </div>
+    <div id="buttons" class="flex" role="group" aria-label="Action buttons">
+      <button id="create" class="cta disabled" disabled aria-describedby="create_help" title="Select an object first">
+        Create Grid
+      </button>
+      <div id="create_help" class="sr-only">Creates a noise grid with the selected object</div>
+
+      <button id="cancel" aria-describedby="cancel_help">
+        Cancel
+      </button>
+      <div id="cancel_help" class="sr-only">Closes the plugin without creating a grid</div>
+    </div>
+    <div class="credits">
+      <p>
+        By
+        <a href="https://www.figma.com/@genoma" target="_blank">G3N0M4</a>
+      </p>
+      <p>
+        Instagram
+        <a href="https://www.instagram.com/g3n0m4/" target="_blank">@g3n0m4</a>
+      </p>
+    </div>
+
+
+  </div>
+  <div class="banner">
+    <a href="https://buymeacoffee.com/g3n0m4" target="_blank" class="coffee-banner">
+      Enjoy the noise? →&nbsp;<span class="coffee-link">Buy me a coffee!</span> &nbsp 🙂 ☕️
+    </a>
+  </div>
+
+  <script>
+    const x_textbox = document.getElementById("x_count");
+    const y_textbox = document.getElementById("y_count");
+    //const dimension_textbox = document.getElementById("dimension");
+    const x_gap_textbox = document.getElementById("x_gap");
+    const y_gap_textbox = document.getElementById("y_gap");
+    const displacement_slider = document.getElementById("disp_off");
+    const factor_slider = document.getElementById("factor");
+    const noiseXOffsetSlider = document.getElementById("noiseXOffset");
+    const rotateCheckbox = document.getElementById("rotate_enabled");
+    const rotationSlider = document.getElementById("rotation_amount");
+    const rotationLabel = document.getElementById('rotation-amount-label');
+    const randomizeCheckbox = document.getElementById("randomize_variants");
+    const variantSeedInput = document.getElementById("variant_seed");
+    const displacementNoiseTypeSelect = document.getElementById("displacement_noise_type");
+    const rotationNoiseTypeSelect = document.getElementById("rotation_noise_type");
+    const variantNoiseTypeSelect = document.getElementById("variant_noise_type");
+
+    // Function to toggle rotation input based on checkbox
+    function toggleRotationInput() {
+      const disabled = !rotateCheckbox.checked;
+      rotationSlider.disabled = disabled;
+      // Dim the Amount label to reflect disabled state
+      const rotationAmountLabel = document.getElementById('rotation_amount_label');
+      if (rotationAmountLabel) {
+        if (disabled) {
+          rotationAmountLabel.classList.add('disabled-text');
+        } else {
+          rotationAmountLabel.classList.remove('disabled-text');
         }
-        generateGrid();
       }
+      // Do not dim the whole section: label + checkbox should remain active/visible
+    }
 
-      function draw() {
-        background(245);
-        
-        fill(42);
-        noStroke();
-        const margin = 10; 
-        translate(width/2,height/2);
-        for (let d of dots) {
-        
-            let scalingFactor;
+    // Initialize input state
+    toggleRotationInput();
 
-            const maxW = (d.xGap+d.dimension)*d.xCount;
-            const maxH = (d.yGap+d.dimension)*d.yCount;
-            const initialGridAspectRatio = maxW/maxH;
-            const canvasAspectRatio = width/height;
-            
-            if(initialGridAspectRatio>canvasAspectRatio){
-               scalingFactor = width/maxW;
-            }else{
-               scalingFactor = height/maxH;
-            }
-            const mappedXGap = d.xGap*scalingFactor;
-            const mappedYGap = d.yGap*scalingFactor;
-            const mappedDim = d.dimension*scalingFactor;
-            const mappedX = (d.x-maxW/2)*scalingFactor+(mappedDim+mappedXGap)/2;
-            
-            const mappedY = (d.y-maxH/2)*scalingFactor+(mappedDim+mappedYGap)/2;
-            
-          
-            
-            ellipse(mappedX, mappedY, mappedDim, mappedDim);
+    // Add event listener to checkbox
+    rotateCheckbox.addEventListener('change', toggleRotationInput);
 
-         
+    // Function to toggle variant seed input based on checkbox
+    function toggleVariantSeedInput() {
+      const disabled = !randomizeCheckbox.checked || randomizeCheckbox.disabled;
+      variantSeedInput.disabled = disabled;
+      const randomizeContainer = document.getElementById('randomize-container');
+      if (randomizeContainer) {
+        if (randomizeCheckbox.disabled) {
+          randomizeContainer.setAttribute('aria-disabled', 'true');
+        } else {
+          randomizeContainer.removeAttribute('aria-disabled');
         }
-
-        noLoop();
       }
+    }
 
-    
-     
+    // Add event listener to randomize checkbox
+    randomizeCheckbox.addEventListener('change', toggleVariantSeedInput);
 
-     
-      function generateGrid() {
-        dots = [];
-        const x_count = parseInt(x_textbox.value, 10);
-        const y_count = parseInt(y_textbox.value, 10);
-        const dimension = parseInt(dimension_textbox.value, 10);
-        const x_gap = parseInt(x_gap_textbox.value, 10);
-        const y_gap = parseInt(y_gap_textbox.value, 10);
-        const displacement = parseInt(displacement_slider.value, 10);
-        const factor = parseInt(factor_slider.value, 10);
-        const xOffset = parseInt(noiseXOffsetSlider.value, 10); 
-        let index = 0;
-        
-        for (let x = 0; x < x_count; x++) {
-          for (let y = 0; y < y_count; y++) {
-            dots.push({
-              name: `Circle ${index}`,
-              x: x * (x_gap + dimension ) + displacement*cos(map(noise(x / factor+xOffset, y / factor+300),0,1,-PI,PI)),
-              y: y * (y_gap + dimension ) + displacement*sin(map(noise(x / factor+xOffset, y / factor+300),0,1,-PI,PI)),
-              xIndex: x,
-              yIndex: y,
-              xCount: x_count,
-              yCount: y_count, 
-              dimension: dimension,
-              xGap: x_gap,
-              yGap: y_gap, 
-              factor: factor,
-            });
-            index++;
+    let data = [];
+    let selectedImage;
+    let imageQueue = null; // Queue for images that need to be loaded
+    let currentImageUrl = null; // Track current image URL for cleanup
+    let backgroundColor = { r: 245 / 255, g: 245 / 255, b: 245 / 255 }; // Default gray
+    let variantImages = []; // Array of variant images for randomization
+    let variantImageUrls = []; // Array of variant image URLs
+
+    let cnv;
+
+    function setup() {
+      cnv = createCanvas(windowWidth, 300);
+      cnv.parent("canvasContainer");
+
+      // Debug: Log canvas creation
+      console.log('Canvas created:', cnv);
+      console.log('Canvas container:', document.getElementById('canvasContainer'));
+      console.log('Canvas width:', cnv.width, 'height:', cnv.height);
+
+      const inputs = document.querySelectorAll("input");
+      for (let i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("input", function () {
+          if (selectedImage) {
+            data = generateGrid(selectedImage);
+            redraw();
           }
-        }
-
-        redraw();
+        });
       }
 
-      document.getElementById("create").onclick = () => {
-        parent.postMessage(
-          {
-            pluginMessage: {
-              type: "create-grid",
-              dots,
-            },
-          },
-          "*"
-        );
-      };
+      // Add event listeners for select elements (noise type dropdowns)
+      const selects = document.querySelectorAll("select");
+      for (let i = 0; i < selects.length; i++) {
+        selects[i].addEventListener("change", function () {
+          if (selectedImage) {
+            data = generateGrid(selectedImage);
+            redraw();
+          }
+        });
+      }
+      imageMode(CENTER);
+      data = generateGrid(selectedImage);
+      redraw();
+    }
 
-      document.getElementById("cancel").onclick = () => {
-        parent.postMessage({ pluginMessage: { type: "cancel" } }, "*");
-      };
-    </script>
-  </body>
+    function draw() {
+      // Debug: Log draw calls
+      console.log('Draw called, selectedImage:', selectedImage);
+
+      // Use the background color from the selection
+      background(backgroundColor.r * 255, backgroundColor.g * 255, backgroundColor.b * 255);
+
+      // Process any queued image loads
+      if (imageQueue) {
+        // Clean up previous image URL if it exists
+        if (currentImageUrl) {
+          // For data URLs, we don't need to revoke them, just clear the reference
+          currentImageUrl = null;
+        }
+
+        loadImage(imageQueue, img => {
+          if (img && img.width > 0 && img.height > 0) {
+            selectedImage = img;
+            updateGapConstraints();
+            data = generateGrid(selectedImage);
+            imageQueue = null; // Clear the queue
+            redraw();
+          } else {
+            console.error('Invalid image loaded');
+            selectedImage = null;
+            data = [];
+            imageQueue = null;
+            redraw();
+          }
+        }, (error) => {
+          // Error callback for image loading failure
+          console.error('Failed to load image for preview:', error);
+          selectedImage = null;
+          data = [];
+          imageQueue = null;
+          redraw();
+        });
+        imageQueue = null;
+        return;
+      }
+
+      if (!selectedImage) {
+        // Display message when nothing is selected or when there is an error
+        fill(102); // Gray color
+        noStroke();
+        textAlign(CENTER, CENTER);
+        textSize(14);
+        let message = 'Select an element in Figma to start';
+        if (window.__previewErrorMessage && typeof window.__previewErrorMessage === 'string') {
+          message = window.__previewErrorMessage;
+        }
+        text(message, width / 2, height / 2);
+        noLoop();
+        return;
+      }
+
+      fill(42);
+      noStroke();
+      const margin = 10;
+      translate(width / 2, height / 2);
+
+      for (let d of data) {
+        let scalingFactor;
+
+        const maxW = (d.xGap + d.w) * d.xCount;
+        const maxH = (d.yGap + d.h) * d.yCount;
+        const initialGridAspectRatio = maxW / maxH;
+        const canvasAspectRatio = width / height;
+
+        if (initialGridAspectRatio > canvasAspectRatio) {
+          scalingFactor = width / maxW;
+        } else {
+          scalingFactor = height / maxH;
+        }
+
+        const mappedXGap = d.xGap * scalingFactor;
+        const mappedYGap = d.yGap * scalingFactor;
+        const mappedDimX = d.w * scalingFactor;
+        const mappedDimY = d.h * scalingFactor;
+        const mappedX = (d.x - maxW / 2) * scalingFactor + (mappedDimX + mappedXGap) / 2;
+        const mappedY = (d.y - maxH / 2) * scalingFactor + (mappedDimY + mappedYGap) / 2;
+
+        if (selectedImage) {
+          push();
+          translate(mappedX, mappedY);
+
+          // Ensure rotation is a number and convert to radians for p5.js
+          // P5.js rotates clockwise for positive angles, so we don't need the negative sign
+          const rotationRadians = typeof d.rotation === 'number' ? radians(d.rotation) : 0;
+          rotate(rotationRadians);
+
+          // Use variant image if available and randomization is enabled
+          let imageToDraw = selectedImage;
+          if (d.randomizeVariants && variantImages.length > 0) {
+            // Use the variant index to select which variant image to draw
+            const variantIndex = d.variantIndex % variantImages.length;
+            if (variantImages[variantIndex]) {
+              imageToDraw = variantImages[variantIndex];
+            }
+          }
+
+          image(imageToDraw, 0, 0, mappedDimX, mappedDimY);
+          pop();
+        }
+      }
+
+      noLoop();
+    }
+
+
+
+
+
+    // Noise function factory
+    function createNoiseFunction(type) {
+      switch (type) {
+        case 'simplex':
+          return (x, y) => noise(x, y); // We're already using simplex noise
+        case 'random':
+          return (x, y) => Math.random();
+        default:
+          return (x, y) => noise(x, y);
+      }
+    }
+
+    function generateGrid(img) {
+      gridData = [];
+
+      const x_count = parseInt(x_textbox.value, 10);
+      const y_count = parseInt(y_textbox.value, 10);
+      const dw = parseInt(img ? img.width : 0, 10);
+      const dh = parseInt(img ? img.height : 0, 10);
+      const x_gap = parseInt(x_gap_textbox.value, 10);
+      const y_gap = parseInt(y_gap_textbox.value, 10);
+      const displacement = map(parseFloat(displacement_slider.value), -1, 1, -3000, 3000);
+      const factor = map(parseFloat(factor_slider.value), 0, 1, 0, 50);
+      const xOffset = parseInt(noiseXOffsetSlider.value, 10);
+      const rotationEnabled = rotateCheckbox.checked;
+      const rotationAmount = rotationEnabled ? parseFloat(rotationSlider.value) : 0;
+      const randomizeVariants = randomizeCheckbox.checked;
+      const variantSeed = parseInt(variantSeedInput.value, 10);
+
+      // Get noise types
+      const displacementNoiseType = displacementNoiseTypeSelect.value;
+      const rotationNoiseType = rotationNoiseTypeSelect.value;
+      const variantNoiseType = variantNoiseTypeSelect.value;
+
+      // Create noise functions
+      const displacementNoise = createNoiseFunction(displacementNoiseType);
+      const rotationNoise = createNoiseFunction(rotationNoiseType);
+      const variantNoise = createNoiseFunction(variantNoiseType);
+
+      let index = 0;
+
+      for (let x = 0; x < x_count; x++) {
+        for (let y = 0; y < y_count; y++) {
+          // Calculate noise values separately for X and Y using displacement noise
+          const noiseX = displacementNoise(x / factor + xOffset, y / factor);
+          const noiseY = displacementNoise(x / factor + xOffset, y / factor + 1000); // Add offset to Y to avoid correlation
+
+          // Map noise to displacement range more directly
+          const dx = map(noiseX, 0, 1, -displacement, displacement);
+          const dy = map(noiseY, 0, 1, -displacement, displacement);
+
+          // Calculate rotation based on rotation noise
+          let rotation = 0;
+          if (rotationEnabled) {
+            // Use rotation noise for rotation
+            const rotationNoiseValue = rotationNoise(x / factor + xOffset, y / factor);
+            rotation = map(rotationNoiseValue, 0, 1, -rotationAmount, rotationAmount);
+            // Ensure rotation is a number and not NaN
+            rotation = isNaN(rotation) ? 0 : rotation;
+          }
+
+          // Calculate variant selection based on variant noise
+          let variantIndex = 0;
+          if (randomizeVariants) {
+            // Use variant noise for variant selection
+            const variantNoiseValue = variantNoise(x / factor + xOffset + variantSeed * 1000, y / factor + variantSeed * 1000);
+            variantIndex = Math.floor(variantNoiseValue * 10); // 0-9 range
+          }
+
+          gridData.push({
+            name: `shape ${index}`,
+            x: x * (x_gap + dw) + dx,  // Simplified displacement
+            y: y * (y_gap + dh) + dy,  // Simplified displacement
+            xIndex: x,
+            yIndex: y,
+            xCount: x_count,
+            yCount: y_count,
+            w: dw,
+            h: dh,
+            xGap: x_gap,
+            yGap: y_gap,
+            factor: factor,
+            rotation: rotation,
+            variantIndex: variantIndex,
+            randomizeVariants: randomizeVariants,
+            displacementNoiseType: displacementNoiseType,
+            rotationNoiseType: rotationNoiseType,
+            variantNoiseType: variantNoiseType
+          });
+          index++;
+        }
+      }
+
+      return gridData;
+    }
+
+    document.getElementById("create").onclick = () => {
+      // Log rotation values before sending to plugin
+      console.log("Sending grid data with rotation values:",
+        data.map(item => item.rotation));
+
+      parent.postMessage(
+        {
+          pluginMessage: {
+            type: "create-grid",
+            data,
+          },
+        },
+        "*"
+      );
+      // Close the plugin
+      parent.postMessage({ pluginMessage: { type: "close" } }, "*");
+    };
+
+    document.getElementById("cancel").onclick = () => {
+      parent.postMessage({ pluginMessage: { type: "cancel" } }, "*");
+    };
+
+    function updateGapConstraints() {
+      if (selectedImage) {
+        x_gap_textbox.setAttribute('min', -selectedImage.width);
+        y_gap_textbox.setAttribute('min', -selectedImage.height);
+      }
+    }
+
+    // Function to update UI based on selection status
+    function updateCreateButtonState(hasSelection) {
+      const createButton = document.getElementById('create');
+      if (createButton) {
+        createButton.disabled = !hasSelection;
+        createButton.classList.toggle('disabled', !hasSelection);
+        createButton.title = hasSelection ? 'Create grid with selected object' : 'Select an object first';
+      }
+    }
+
+    // Add event listener for messages from the plugin
+    window.onmessage = async (event) => {
+      const msg = event.data.pluginMessage;
+
+      if (msg.type === 'selection-updated') {
+        // Capture any error message from plugin to display on canvas
+        if (msg.errorMessage) {
+          window.__previewErrorMessage = msg.errorMessage;
+        } else {
+          window.__previewErrorMessage = null;
+        }
+        // Always update page background color if provided (even when no image is sent)
+        if (msg.backgroundColor) {
+          backgroundColor = msg.backgroundColor;
+        }
+        // Update the preview image only if a new image is provided
+        if (msg.image) {
+          // Clean up previous image URL if it exists
+          if (currentImageUrl) {
+            // For data URLs, we don't need to revoke them, just clear the reference
+            currentImageUrl = null;
+          }
+
+          try {
+            // Debug: Log received image data
+            console.log('Received image data type:', typeof msg.image);
+            console.log('Received image data length:', msg.image ? msg.image.length : 'null');
+            console.log('Received image data constructor:', msg.image ? msg.image.constructor.name : 'null');
+
+            // Ensure we have proper Uint8Array data
+            const imageData = msg.image instanceof Uint8Array ? msg.image : new Uint8Array(msg.image);
+            console.log('Processed image data length:', imageData.length);
+
+            // Convert Uint8Array to base64 string for data URL
+            const base64String = btoa(String.fromCharCode.apply(null, imageData));
+            const dataUrl = `data:image/png;base64,${base64String}`;
+            console.log('Created data URL length:', dataUrl.length);
+
+            // Clean up previous image URL if it exists
+            if (currentImageUrl) {
+              // For data URLs, we don't need to revoke them
+              currentImageUrl = null;
+            }
+
+            currentImageUrl = dataUrl; // Track the current URL
+            // Queue the image URL for loading in the draw loop
+            imageQueue = dataUrl;
+            if (msg.backgroundColor) {
+              backgroundColor = msg.backgroundColor;
+            }
+
+            // Process variant images if provided
+            if (msg.variantImages && msg.variantImages.length > 0) {
+              console.log(`Received ${msg.variantImages.length} variant images`);
+              variantImages = [];
+              variantImageUrls = [];
+
+              // Clean up previous variant image URLs
+              variantImageUrls.forEach(url => {
+                if (url && url.startsWith('data:')) {
+                  // Data URLs don't need to be revoked
+                }
+              });
+
+              // Convert variant images to data URLs
+              for (let i = 0; i < msg.variantImages.length; i++) {
+                try {
+                  const variantImageData = msg.variantImages[i] instanceof Uint8Array ? msg.variantImages[i] : new Uint8Array(msg.variantImages[i]);
+                  const base64String = btoa(String.fromCharCode.apply(null, variantImageData));
+                  const dataUrl = `data:image/png;base64,${base64String}`;
+                  variantImageUrls.push(dataUrl);
+
+                  // Preload the image
+                  loadImage(dataUrl, (img) => {
+                    variantImages[i] = img;
+                  });
+                } catch (error) {
+                  console.error('Error processing variant image:', error);
+                }
+              }
+
+              // Enable randomize checkbox if we have multiple variants
+              if (msg.variantImages.length > 1) {
+                randomizeCheckbox.disabled = false;
+              } else {
+                randomizeCheckbox.disabled = true;
+                randomizeCheckbox.checked = false;
+              }
+              toggleVariantSeedInput();
+            } else {
+              variantImages = [];
+              variantImageUrls = [];
+              randomizeCheckbox.disabled = true;
+              randomizeCheckbox.checked = false;
+              toggleVariantSeedInput();
+            }
+
+            loop(); // Restart the draw loop to process the image
+          } catch (error) {
+            console.error('Error creating image data URL:', error);
+            selectedImage = null;
+            data = [];
+            redraw();
+          }
+        } else {
+          // Clean up image URL when clearing selection
+          if (currentImageUrl) {
+            // For data URLs, we don't need to revoke them, just clear the reference
+            currentImageUrl = null;
+          }
+          selectedImage = null;
+          data = [];
+          // Disable variant controls when no selection
+          randomizeCheckbox.disabled = true;
+          randomizeCheckbox.checked = false;
+          toggleVariantSeedInput();
+          redraw();
+        }
+
+        // Update create button state based on selection
+        updateCreateButtonState(msg.hasSelection);
+      } else if (msg.type === 'selection-status') {
+        // Update create button state based on selection status
+        updateCreateButtonState(msg.hasSelection);
+      }
+    };
+
+    // Check selection status when UI loads
+    window.onload = function () {
+      // Initial state - disable button until we know there's a selection
+      updateCreateButtonState(false);
+
+      // Ask the plugin for the current selection status
+      parent.postMessage({ pluginMessage: { type: 'selection-status-check' } }, '*');
+    };
+
+    // Add drag functionality to number inputs
+    const numberInputs = document.querySelectorAll('input[type="number"]');
+    numberInputs.forEach(input => {
+      let isDragging = false;
+      let startX;
+      let startValue;
+
+      input.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        startValue = Number(input.value);
+        input.style.cursor = 'ew-resize';
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+
+        e.preventDefault();
+        const delta = e.clientX - startX;
+        const step = e.shiftKey ? 10 : 1;
+        const newValue = startValue + Math.round(delta / 2) * step;
+
+        let min = input.hasAttribute('min') ? Number(input.getAttribute('min')) : -Infinity;
+        if (selectedImage && (input.id === 'x_gap' || input.id === 'y_gap')) {
+          min = input.id === 'x_gap' ? -selectedImage.width : -selectedImage.height;
+        }
+        const max = input.hasAttribute('max') ? Number(input.getAttribute('max')) : Infinity;
+
+        input.value = Math.min(Math.max(newValue, min), max);
+        input.dispatchEvent(new Event('input'));
+      });
+
+      window.addEventListener('mouseup', () => {
+        isDragging = false;
+        input.style.cursor = 'default';
+      });
+
+      // Prevent cursor changes when clicking on input
+      input.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+    });
+
+    // Add this after the number input drag functionality
+    const sliders = document.querySelectorAll('input[type="range"]');
+    sliders.forEach(slider => {
+      // Double click to reset to default value
+      slider.addEventListener('dblclick', (e) => {
+        slider.value = slider.getAttribute('data-default') || slider.value;
+        slider.dispatchEvent(new Event('input'));
+      });
+
+      // Store initial value as default
+      slider.setAttribute('data-default', slider.value);
+
+      // Add snap to zero behavior with normalized values
+      slider.addEventListener('input', (e) => {
+        const value = Number(slider.value);
+        const snapThreshold = 0.05; // 5% of the total range
+
+        // if (Math.abs(value) < snapThreshold) {
+        //   slider.value = 0;
+        //   slider.dispatchEvent(new Event('input'));
+        // }
+      });
+    });
+  </script>
+</body>
+
 </html>
