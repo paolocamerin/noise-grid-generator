@@ -30,46 +30,50 @@ async function getMainComponentForPreview(node: SceneNode): Promise<ComponentNod
       const mainComp = await (node as InstanceNode).getMainComponentAsync();
       return mainComp;
     } catch (error) {
-      console.error('Error getting main component:', error);
       return null;
     }
   }
   return null;
 }
 
-// Function to load all variant images for a component
-async function loadVariantImages(component: ComponentNode): Promise<Uint8Array[]> {
+// Function to load all variant images for a component or component set
+async function loadVariantImages(node: ComponentNode | ComponentSetNode): Promise<Uint8Array[]> {
   const images: Uint8Array[] = [];
 
   try {
-    // Check if component has variants (is part of a component set)
-    const parent = component.parent;
-    if (parent && parent.type === 'COMPONENT_SET') {
-      const variants = parent.children as ComponentNode[];
+    let variants: ComponentNode[] = [];
 
-
-      // Load image for each variant
-      for (const variant of variants) {
-        try {
-          const image = await variant.exportAsync({
-            format: 'PNG',
-            constraint: { type: 'SCALE', value: 1 }
-          });
-          images.push(image);
-        } catch (error) {
-          console.error('Error loading variant image:', error);
-        }
+    if (node.type === 'COMPONENT_SET') {
+      // If it's a component set, get all its children
+      variants = node.children as ComponentNode[];
+    } else if (node.type === 'COMPONENT') {
+      // If it's a component, check if it's part of a component set
+      const parent = node.parent;
+      if (parent && parent.type === 'COMPONENT_SET') {
+        variants = parent.children as ComponentNode[];
+      } else {
+        // Single component, load just the main component image
+        const image = await node.exportAsync({
+          format: 'PNG',
+          constraint: { type: 'SCALE', value: 1 }
+        });
+        images.push(image);
+        return images;
       }
-    } else {
-      // Single component, load just the main component image
-      const image = await component.exportAsync({
-        format: 'PNG',
-        constraint: { type: 'SCALE', value: 1 }
-      });
-      images.push(image);
+    }
+
+    // Load image for each variant
+    for (const variant of variants) {
+      try {
+        const image = await variant.exportAsync({
+          format: 'PNG',
+          constraint: { type: 'SCALE', value: 1 }
+        });
+        images.push(image);
+      } catch (error) {
+      }
     }
   } catch (error) {
-    console.error('Error loading variant images:', error);
   }
 
   return images;
@@ -92,7 +96,6 @@ async function handleVariantGroupSelection(node: SceneNode): Promise<Uint8Array 
           return image;
         }
       } catch (error) {
-        console.error('Error loading first variant image:', error);
         return null;
       }
     }
@@ -124,7 +127,6 @@ async function createGridWithSelection(gridData: any) {
       }
       gridComponent = mainComponent;
     } catch (error) {
-      console.error('Error getting main component:', error);
       figma.notify('Error accessing the main component. Please try again.');
       return;
     }
@@ -141,7 +143,6 @@ async function createGridWithSelection(gridData: any) {
     try {
       gridComponent = figma.createComponentFromNode(selectedNode);
     } catch (error) {
-      console.error('createComponentFromNode failed for node type', selectedNode.type, error);
       figma.notify('Cannot create a component from the selected node. Select a component, instance, or a frame/group.');
       return;
     }
@@ -162,7 +163,6 @@ async function createGridWithSelection(gridData: any) {
             }
           }
         } catch (error) {
-          console.error('Error selecting variant component:', error);
         }
       }
 
@@ -271,11 +271,12 @@ function getBackgroundColorFromNode(node: SceneNode | PageNode): { r: number, g:
           if (selectedNode.type === 'COMPONENT_SET') {
             const firstVariant = (selectedNode as ComponentSetNode).children?.[0] as ComponentNode | undefined;
             if (firstVariant) {
+
               image = await firstVariant.exportAsync({
                 format: 'PNG',
                 constraint: { type: 'SCALE', value: 1 }
               });
-              initialVariantImages = await loadVariantImages(firstVariant);
+              initialVariantImages = await loadVariantImages(selectedNode as ComponentSetNode);
             } else {
               figma.notify('Selected component set has no variants');
             }
@@ -296,10 +297,11 @@ function getBackgroundColorFromNode(node: SceneNode | PageNode): { r: number, g:
             image: image,
             hasSelection: true,
             backgroundColor: backgroundColor,
-            variantImages: initialVariantImages
+            variantImages: initialVariantImages,
+            isSelectionASet: selectedNode.type === 'COMPONENT_SET'
           });
         } catch (error) {
-          console.error('Error exporting image:', error);
+          figma.notify('Error exporting preview image');
         }
       }
     }
@@ -366,12 +368,10 @@ function getBackgroundColorFromNode(node: SceneNode | PageNode): { r: number, g:
           });
         }
       } catch (error) {
-        console.error('Error handling document change:', error);
         figma.notify('Error updating preview');
       }
     });
   } catch (error) {
-    console.error('Error initializing plugin:', error);
     figma.notify('Error initializing plugin. Please try again.');
   }
 })();
@@ -385,14 +385,6 @@ figma.ui.onmessage = async (msg) => {
     figma.ui.postMessage({
       type: 'selection-status',
       hasSelection: selectedNode !== null
-    });
-    // Also send a selection-updated with page background so UI can paint canvas on startup
-    const bg = getBackgroundColorFromNode(figma.currentPage);
-    figma.ui.postMessage({
-      type: 'selection-updated',
-      image: null,
-      hasSelection: selectedNode !== null,
-      backgroundColor: bg
     });
   } else if (msg.type === 'close') {
     figma.closePlugin();
@@ -448,7 +440,8 @@ figma.on('selectionchange', async () => {
             image: variantGroupImage,
             hasSelection: true,
             backgroundColor: backgroundColor,
-            variantImages: variantImages
+            variantImages: variantImages,
+            isSelectionASet: true
           });
           return;
         }
@@ -482,10 +475,10 @@ figma.on('selectionchange', async () => {
           image: image,
           hasSelection: true,
           backgroundColor: backgroundColor,
-          variantImages: variantImages
+          variantImages: variantImages,
+          isSelectionASet: selectedNode.type === 'COMPONENT_SET'
         });
       } catch (error) {
-        console.error('Error exporting image:', error);
         figma.notify('Error updating preview');
       }
     } else {
@@ -506,10 +499,10 @@ figma.on('selectionchange', async () => {
           image: image,
           hasSelection: true,
           backgroundColor: backgroundColor,
-          variantImages: variantImages
+          variantImages: variantImages,
+          isSelectionASet: selectedNode.type === 'COMPONENT_SET'
         });
       } catch (error) {
-        console.error('Error exporting image:', error);
         figma.notify('Error updating preview');
       }
     }
