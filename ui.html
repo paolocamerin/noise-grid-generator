@@ -863,9 +863,7 @@
       cnv.parent("canvasContainer");
 
       // Debug: Log canvas creation
-      console.log('Canvas created:', cnv);
-      console.log('Canvas container:', document.getElementById('canvasContainer'));
-      console.log('Canvas width:', cnv.width, 'height:', cnv.height);
+
 
       const inputs = document.querySelectorAll("input");
       for (let i = 0; i < inputs.length; i++) {
@@ -894,7 +892,7 @@
 
     function draw() {
       // Debug: Log draw calls
-      console.log('Draw called, selectedImage:', selectedImage);
+
 
       // Use the background color from the selection
       background(backgroundColor.r * 255, backgroundColor.g * 255, backgroundColor.b * 255);
@@ -1030,7 +1028,7 @@
       const factor = map(parseFloat(factor_slider.value), 0, 1, 0, 50);
       const xOffset = parseInt(noiseXOffsetSlider.value, 10);
       const rotationEnabled = rotateCheckbox.checked;
-      const rotationAmount = rotationEnabled ? parseFloat(rotationSlider.value) : 0;
+      const rotationAmount = rotationEnabled ? parseFloat(rotationSlider.value) * 10 : 0;
       const randomizeVariants = randomizeCheckbox.checked;
       const variantSeed = parseInt(variantSeedInput.value, 10);
 
@@ -1103,8 +1101,7 @@
 
     document.getElementById("create").onclick = () => {
       // Log rotation values before sending to plugin
-      console.log("Sending grid data with rotation values:",
-        data.map(item => item.rotation));
+
 
       parent.postMessage(
         {
@@ -1164,19 +1161,16 @@
           }
 
           try {
-            // Debug: Log received image data
-            console.log('Received image data type:', typeof msg.image);
-            console.log('Received image data length:', msg.image ? msg.image.length : 'null');
-            console.log('Received image data constructor:', msg.image ? msg.image.constructor.name : 'null');
+
 
             // Ensure we have proper Uint8Array data
             const imageData = msg.image instanceof Uint8Array ? msg.image : new Uint8Array(msg.image);
-            console.log('Processed image data length:', imageData.length);
+
 
             // Convert Uint8Array to base64 string for data URL
             const base64String = btoa(String.fromCharCode.apply(null, imageData));
             const dataUrl = `data:image/png;base64,${base64String}`;
-            console.log('Created data URL length:', dataUrl.length);
+
 
             // Clean up previous image URL if it exists
             if (currentImageUrl) {
@@ -1193,7 +1187,7 @@
 
             // Process variant images if provided
             if (msg.variantImages && msg.variantImages.length > 0) {
-              console.log(`Received ${msg.variantImages.length} variant images`);
+
               variantImages = [];
               variantImageUrls = [];
 

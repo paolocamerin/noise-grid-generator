@@ -46,7 +46,7 @@ async function loadVariantImages(component: ComponentNode): Promise<Uint8Array[]
     const parent = component.parent;
     if (parent && parent.type === 'COMPONENT_SET') {
       const variants = parent.children as ComponentNode[];
-      console.log(`Found ${variants.length} variants for component`);
+
 
       // Load image for each variant
       for (const variant of variants) {
@@ -88,7 +88,7 @@ async function handleVariantGroupSelection(node: SceneNode): Promise<Uint8Array 
             format: 'PNG',
             constraint: { type: 'SCALE', value: 1 }
           });
-          console.log('Loaded first variant image from variant group');
+
           return image;
         }
       } catch (error) {
@@ -286,10 +286,7 @@ function getBackgroundColorFromNode(node: SceneNode | PageNode): { r: number, g:
             });
           }
 
-          // Debug: Log image data info
-          console.log('Image data type:', image ? typeof image : 'null');
-          console.log('Image data length:', image ? image.length : 'null');
-          console.log('Image data constructor:', image ? (image as any).constructor?.name : 'null');
+
 
           // Extract background color from node hierarchy
           const backgroundColor = getBackgroundColorFromNode(selectedNode);
@@ -442,7 +439,7 @@ figma.on('selectionchange', async () => {
           if (firstVariant) {
             variantImages = await loadVariantImages(firstVariant);
           }
-          console.log(`Loaded ${variantImages.length} variant images from variant group`);
+
 
           const backgroundColor = getBackgroundColorFromNode(selectedNode);
 
@@ -460,7 +457,7 @@ figma.on('selectionchange', async () => {
       // Load variant images if we have a component
       if (mainComponent) {
         variantImages = await loadVariantImages(mainComponent);
-        console.log(`Loaded ${variantImages.length} variant images`);
+
       } else {
         variantImages = [];
       }
@@ -475,10 +472,7 @@ figma.on('selectionchange', async () => {
           constraint: { type: 'SCALE', value: 1 }
         });
 
-        // Debug: Log image data info
-        console.log('Selection change - Image data type:', typeof image);
-        console.log('Selection change - Image data length:', image ? image.length : 'null');
-        console.log('Selection change - Image data constructor:', image ? image.constructor.name : 'null');
+
 
         // Extract background color from node hierarchy
         const backgroundColor = getBackgroundColorFromNode(selectedNode);
