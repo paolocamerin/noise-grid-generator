@@ -384,7 +384,8 @@ figma.ui.onmessage = async (msg) => {
     // Send back whether there's a selection or not
     figma.ui.postMessage({
       type: 'selection-status',
-      hasSelection: selectedNode !== null
+      hasSelection: selectedNode !== null,
+      isSelectionASet: selectedNode?.type === 'COMPONENT_SET'
     });
   } else if (msg.type === 'close') {
     figma.closePlugin();

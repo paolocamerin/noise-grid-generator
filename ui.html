@@ -1220,8 +1220,17 @@
         // Update create button state based on selection
         updateCreateButtonState(msg.hasSelection);
       } else if (msg.type === 'selection-status') {
-        // Update create button state based on selection status
+        // Update create button and checkbox state based on selection status
         updateCreateButtonState(msg.hasSelection);
+        if (!msg.hasSelection) {
+          randomizeCheckbox.disabled = true;
+          randomizeCheckbox.checked = false;
+          toggleVariantSeedInput();
+        } else if (typeof msg.isSelectionASet === 'boolean') {
+          randomizeCheckbox.disabled = !msg.isSelectionASet;
+          if (!msg.isSelectionASet) randomizeCheckbox.checked = false;
+          toggleVariantSeedInput();
+        }
       }
     };
 
