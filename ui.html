@@ -1021,6 +1021,7 @@
           if (randomizeVariants) {
             // Use variant noise for variant selection based on actual number of variants
             const variantCount = Array.isArray(variantImages) ? variantImages.length : 0;
+            console.log("The component set contains : ", variantCount, "variants");
             if (variantCount > 0) {
               const variantNoiseValue = variantNoise(
                 x / factor + xOffset + variantSeed * 1000,
@@ -1028,6 +1029,7 @@
               );
               // Ensure index is within [0, variantCount - 1]
               variantIndex = Math.min(Math.floor(variantNoiseValue * variantCount), variantCount - 1);
+
             } else {
               variantIndex = 0;
             }
