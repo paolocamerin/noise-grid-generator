@@ -1019,9 +1019,18 @@
           // Calculate variant selection based on variant noise
           let variantIndex = 0;
           if (randomizeVariants) {
-            // Use variant noise for variant selection
-            const variantNoiseValue = variantNoise(x / factor + xOffset + variantSeed * 1000, y / factor + variantSeed * 1000);
-            variantIndex = Math.floor(variantNoiseValue * 10); // 0-9 range
+            // Use variant noise for variant selection based on actual number of variants
+            const variantCount = Array.isArray(variantImages) ? variantImages.length : 0;
+            if (variantCount > 0) {
+              const variantNoiseValue = variantNoise(
+                x / factor + xOffset + variantSeed * 1000,
+                y / factor + variantSeed * 1000
+              );
+              // Ensure index is within [0, variantCount - 1]
+              variantIndex = Math.min(Math.floor(variantNoiseValue * variantCount), variantCount - 1);
+            } else {
+              variantIndex = 0;
+            }
           }
 
           gridData.push({
