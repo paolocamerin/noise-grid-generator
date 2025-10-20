@@ -1,7 +1,7 @@
 {
-  "name": "Noise Grid Generator",
-  "version": "1.0.0",
-  "description": "Your Figma Plugin",
+  "name": "Noise Grid Generator 2",
+  "version": "2.0.0",
+  "description": "A Figma plugin that generates customizable grids of random noise dots or component instances, enabling users to easily create dotted textures, patterns, backgrounds, or experiment with procedural layouts using any selected component or shape.",
   "main": "code.js",
   "scripts": {
     "build": "webpack",
