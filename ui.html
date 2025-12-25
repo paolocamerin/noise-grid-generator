@@ -243,19 +243,45 @@
       flex-direction: row;
       justify-content: center;
       align-items: center;
-      margin-top: 12px;
-
-      gap: 12px;
-      font-weight: 400;
-      font-size: 10px;
-      text-transform: uppercase;
-
+      margin-top: 0;
+      padding: 8px 16px 16px 16px;
+      gap: 8px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-weight: normal;
+      font-size: 12px;
+      text-transform: none;
+      flex-wrap: wrap;
+      background: white;
     }
 
-    .banner {
+    .credits p {
+      margin: 0;
+      color: #212121;
+      white-space: nowrap;
+    }
+
+    .credits a {
+      color: #0079d5;
+      text-decoration: none;
+    }
+
+    .credits .support-link {
+      color: #af7d00;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+
+    .bottom-section {
       flex-shrink: 0;
       width: 100%;
-      z-index: 10;
+      background: white;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .button-container {
+      padding: 16px 16px 8px 16px;
+      background: white;
     }
 
     .coffee-banner {
@@ -276,8 +302,6 @@
       box-sizing: border-box;
       border-top: 1px solid rgba(255, 255, 255, 0.2);
     }
-
-
 
     .coffee-banner svg {
       margin-right: 8px;
@@ -306,12 +330,21 @@
     }
 
     .cta {
-      margin-top: 16px;
-      background-color: #0D8CE9;
+      margin-top: 0;
+      background-color: #0090ff;
       color: white;
       max-width: 100% !important;
       width: 100% !important;
       display: block !important;
+      border-radius: 4px;
+      padding: 8px 100px;
+      height: auto;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 12px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      box-sizing: border-box;
     }
 
     .titleContainer {
@@ -341,7 +374,7 @@
     }
 
     #create:hover {
-      background-color: #0159B5;
+      background-color: #0079d5;
     }
 
     input[type=range] {
@@ -733,30 +766,28 @@
       </div>
     </div>
 
-    <button id="create" class="cta disabled" disabled aria-describedby="create_help" title="Select an object first">
-      Create Grid
-    </button>
-    <div id="create_help" class="sr-only">Creates a noise grid with the selected object</div>
-
-
-
+  </div>
+  
+  <!-- Bottom section with button and credits -->
+  <div class="bottom-section">
+    <div class="button-container">
+      <button id="create" class="cta disabled" disabled aria-describedby="create_help" title="Select an object first">
+        Create Grid
+      </button>
+      <div id="create_help" class="sr-only">Creates a noise grid with the selected object</div>
+    </div>
     <div class="credits">
       <p>
-        By
+        <span>By </span>
         <a href="https://www.figma.com/@genoma" target="_blank">G3N0M4</a>
       </p>
       <p>
-        Instagram
-        <a href="https://www.instagram.com/g3n0m4/" target="_blank">@g3n0m4</a>
+        <a href="https://www.instagram.com/g3n0m4/" target="_blank">@G3N0M4</a>
+      </p>
+      <p>
+        <a href="https://buymeacoffee.com/g3n0m4" target="_blank" class="support-link">Support me ☕</a>
       </p>
     </div>
-
-
-  </div>
-  <div class="banner">
-    <a href="https://buymeacoffee.com/g3n0m4" target="_blank" class="coffee-banner">
-      Enjoy the noise? →&nbsp;<span class="coffee-link">Buy me a coffee!</span> &nbsp 🙂 ☕️
-    </a>
   </div>
 
   <script>
