@@ -39,9 +39,24 @@
     }
 
     #create {
-      width: 100% !important;
-      max-width: 100% !important;
-      display: block !important;
+      width: 100%;
+      max-width: 100%;
+      display: block;
+      flex: none;
+      height: 40px;
+      min-height: 40px;
+      box-sizing: border-box;
+      margin-top: 0;
+      background-color: #0090ff;
+      color: white;
+      border-radius: 4px;
+      padding: 8px 16px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
     }
 
     h1 {
@@ -280,7 +295,7 @@
     }
 
     .button-container {
-      padding: 16px 16px 8px 16px;
+      padding: 16px 8px 8px 8px;
       background: white;
     }
 
@@ -329,23 +344,6 @@
       justify-content: space-between;
     }
 
-    .cta {
-      margin-top: 0;
-      background-color: #0090ff;
-      color: white;
-      max-width: 100% !important;
-      width: 100% !important;
-      display: block !important;
-      border-radius: 4px;
-      padding: 8px 100px;
-      height: auto;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      font-size: 12px;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-      box-sizing: border-box;
-    }
 
     .titleContainer {
       display: flex;
@@ -375,6 +373,36 @@
 
     #create:hover {
       background-color: #0079d5;
+    }
+
+    #create:active {
+      background-color: #0066b3;
+    }
+
+    #create:focus {
+      outline: 2px solid #0D8CE9;
+      outline-offset: 2px;
+      /* Ensure outline doesn't affect layout */
+      box-sizing: border-box;
+    }
+
+    #create:focus:not(:focus-visible) {
+      /* Remove outline for mouse clicks, keep for keyboard */
+      outline: none;
+    }
+
+    #create:disabled,
+    #create.disabled {
+      background-color: #cccccc;
+      color: #666666;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    #create:disabled:hover,
+    #create.disabled:hover {
+      background-color: #cccccc;
+      /* Prevent hover effect when disabled */
     }
 
     input[type=range] {
@@ -582,8 +610,13 @@
     }
 
     /* Focus styles for better accessibility */
-    input:focus,
-    button:focus {
+    input:focus {
+      outline: 2px solid #0D8CE9;
+      outline-offset: 2px;
+    }
+
+    /* Button focus is handled specifically for #create above */
+    button:focus:not(#create) {
       outline: 2px solid #0D8CE9;
       outline-offset: 2px;
     }
@@ -771,7 +804,7 @@
   <!-- Bottom section with button and credits -->
   <div class="bottom-section">
     <div class="button-container">
-      <button id="create" class="cta disabled" disabled aria-describedby="create_help" title="Select an object first">
+      <button id="create" class="disabled" disabled aria-describedby="create_help" title="Select an object first">
         Create Grid
       </button>
       <div id="create_help" class="sr-only">Creates a noise grid with the selected object</div>
@@ -1125,8 +1158,7 @@
         },
         "*"
       );
-      // Close the plugin
-      parent.postMessage({ pluginMessage: { type: "close" } }, "*");
+      // Plugin stays open - user can close it manually or create more grids
     };
 
 
